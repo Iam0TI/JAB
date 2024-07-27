@@ -2,8 +2,6 @@ from hashlib import sha256
 from Crypto.PublicKey import ECC
 import base64
 
-
-
 class string_util:
     
     def apply_sha_256( self, strinput: str) -> str:
