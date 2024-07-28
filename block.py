@@ -1,6 +1,6 @@
-import time
 from string_util import string_util
 from merkle import get_merkle_root
+from datetime import datetime
 
  
 class Block  :
@@ -8,7 +8,8 @@ class Block  :
     #block constructor
     def __init__(self,previousHash:str ) -> None:
         self.previousHash = previousHash
-        self.timeStamp:int = int(time.time() * 1000)
+        now = datetime.now()    
+        self.timeStamp:int = int(int(now.timestamp())* 1000)
         self.nonce = 0 
         self.transactions = []
         self.merkle_root = self.compute_merkle_root()

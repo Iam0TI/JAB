@@ -1,8 +1,7 @@
-import hashlib
 from Crypto.Signature import DSS
 from Crypto.Hash import SHA256
 from Crypto.PublicKey import ECC
-from typing import Union
+
 
 class string_util:
     @staticmethod
@@ -32,7 +31,7 @@ class string_util:
     @staticmethod
     def apply_sha_256(strinput: str) -> str:
         try:
-            hash_str = hashlib.sha256(strinput.encode('utf-8')).hexdigest()
+            hash_str = SHA256.new(strinput.encode('utf-8')).hexdigest()
             return hash_str
         except Exception as e:
             raise RuntimeError(e)

@@ -10,7 +10,7 @@ class Blockchain():
         self.chain = []
         self.UTXOs  ={}
         #seting chain diffculty to 6
-        self.difficulty =  2
+        self.difficulty =  6
         self.minimum_transaction = 0.1
         self.create_genesis_block()
 
