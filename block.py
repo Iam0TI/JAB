@@ -1,45 +1,54 @@
 import time
-from hashlib import sha256
+from string_util import string_util
+from merkle import get_merkle_root
 
  
 class Block  :
 
     #block constructor
-    def __init__(self, data:str , previousHash:str ) -> None:
-        self.data = data
+    def __init__(self,previousHash:str ) -> None:
         self.previousHash = previousHash
         self.timeStamp:int = int(time.time() * 1000)
         self.nonce = 0 
-        self.difficulty = 6
-        self.hash:str = self.calculateHash ()
+        self.transactions = []
+        self.merkle_root = self.compute_merkle_root()
+        self.hash:str = self.calculate_hash ()
+       
         
 
-
-    #Applies Sha256 to a string and returns the result. 
-
-    def apply_sha_256( self, strinput: str) -> str:
-        try:
-            hash :str = sha256(strinput.encode('utf-8')).hexdigest()
-            return hash 
-        except Exception as e: 
-            raise RuntimeError(e)
-
-  
      #to calculate hash   
-    def calculateHash (self)  -> str :
-        # Concatenate the data, previous hash, and timestamp into a single string
-        hashString = self.data + self.previousHash + str(self.timeStamp) + str(self.nonce)
+    def calculate_hash (self)  -> str :
+        # Concatenate the merkle_rooot, previous hash, and timestamp into a single string
+        hashString = self.previousHash + str(self.timeStamp) + str(self.nonce) + self.merkle_root
         # Calculate the hash using SHA-256
-        return self.applySha256(hashString)
+        return string_util.apply_sha_256(hashString)
     
-    def mineBlock(self, difficulty:int):
+    def  mine_block(self,difficulty):
         
+       self.merkle_root = get_merkle_root(self.transactions)
        target = '0' * difficulty  # Create a string with difficulty * "0"
        while self.hash[:difficulty] != target:
             self.nonce += 1
-            self.hash = self.calculateHash()
+            self.hash = self.calculate_hash()
         
        print(f"Block Mined!!! : {self.hash}")
 
 
-   
+    def compute_merkle_root(self):
+        transaction_ids = [tx.transaction_id for tx in self.transactions]
+        return get_merkle_root(transaction_ids)
+
+    def add_transaction(self, transaction,blockchain) -> bool:
+        #process transaction and check if valid, unless block is genesis block then ignore.
+        if transaction is None:
+            return False
+        
+        if (self.previousHash != "0"):
+            if not transaction.process_transaction(blockchain) :
+                print("Transaction failed to process. Discarded.")
+                return False
+            
+        self.transactions.append(transaction)
+        print("Transaction Successfully added to Block")
+        return True
+        
