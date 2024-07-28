@@ -26,7 +26,7 @@ class string_util:
             return True
         except ValueError:
             return False
-                            
+
     # Converts input string to bytes        
     # Creates a new SHA-256 hash object and update it with the input bytes
     @staticmethod
@@ -36,4 +36,6 @@ class string_util:
             return hash_str
         except Exception as e:
             raise RuntimeError(e)
+        
+    
 
