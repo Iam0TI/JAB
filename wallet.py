@@ -3,9 +3,6 @@ from Crypto.PublicKey import ECC
 from Crypto.Hash import SHA256
 
 
-
-
-
 class Wallet :
 
     def __init__(self,blockchain):
